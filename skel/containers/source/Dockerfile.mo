@@ -4,6 +4,11 @@ MAINTAINER David Parrish <daveparrish@tutanota.com>
 
 # Source directory. Will be deleted on rebuilds to refresh source.
 
+# Install Drush (latest)
+RUN cd /usr/local/src/drush && \
+git checkout master && \
+composer install
+
 # Copy source
 COPY {{PROJECT_SOURCE_PATH}} {{PROJECT_SOURCE_CONTAINER_PATH}}
 

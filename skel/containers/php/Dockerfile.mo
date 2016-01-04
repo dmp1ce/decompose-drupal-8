@@ -1,6 +1,11 @@
 FROM dmp1ce/php-fpm-drupal:5
 MAINTAINER David Parrish <daveparrish@tutanota.com>
 
+# Install Drush (latest)
+RUN cd /usr/local/src/drush && \
+git checkout master && \
+composer install
+
 # Use the default php.ini depending on $environment.
 RUN cp /usr/src/php/php.ini-{{PROJECT_ENVIRONMENT}} /usr/local/etc/php/php.ini
 
