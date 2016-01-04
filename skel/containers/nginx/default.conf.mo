@@ -1,13 +1,9 @@
-# Drupal 7 nginx config
-# Reference: http://wiki.nginx.org/Drupal
+# Drupal 8 nginx config
+# Reference: https://www.nginx.com/resources/wiki/start/topics/recipes/drupal/
 server {
   server_name {{PROJECT_NGINX_VIRTUAL_HOST}};
   root {{PROJECT_SOURCE_CONTAINER_PATH}}; ## <-- Your only path reference.
  
-  # Enable compression, this will help if you have for instance advagg‎ module
-  # by serving Gzip versions of the files.
-  gzip_static on;
-
   location = /favicon.ico {
     log_not_found off;
     access_log off;
@@ -49,7 +45,7 @@ server {
  
   location / {
     # This is cool because no php is touched for static content
-    try_files $uri @rewrite;
+    try_files $uri /index.php?$query_string;
 
 {{#PROJECT_HTTP_SECURITY}}
     auth_basic  "Access Restricted";
@@ -58,13 +54,25 @@ server {
   }
  
   location @rewrite {
-    # For D7 and above:
-    # Clean URLs are handled in drupal_environment_initialize().
-    rewrite ^ /index.php;
+    rewrite ^/(.*)$ /index.php?q=$1;
+  }
+
+  # Don't allow direct access to PHP files in the vendor directory.
+  location ~ /vendor/.*\.php$ {
+    deny all;
+    return 404;
   }
  
-  location ~ \.php$ {
-    fastcgi_split_path_info ^(.+\.php)(/.+)$;
+  # In Drupal 8, we must also match new paths where the '.php' appears in the middle,
+  # such as update.php/selection. The rule we use is strict, and only allows this pattern
+  # with the update.php front controller.  This allows legacy path aliases in the form of
+  # blog/index.php/legacy-path to continue to route to Drupal nodes. If you do not have
+  # any paths like that, then you might prefer to use a laxer rule, such as:
+  #   location ~ \.php(/|$) {
+  # The laxer rule will continue to work if Drupal uses this new URL pattern with front
+  # controllers other than update.php in a future release.
+  location ~ '\.php$|^/update.php' {
+    fastcgi_split_path_info ^(.+?\.php)(|/.*)$;
     #NOTE: You should have "cgi.fix_pathinfo = 0;" in php.ini
     include fastcgi_params;
     fastcgi_param SCRIPT_FILENAME $request_filename;
