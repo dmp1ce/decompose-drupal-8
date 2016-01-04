@@ -6,7 +6,7 @@ source $(_decompose-project-root)/.decompose/environment/lib/docker/processes
 
 # Declare processes
 DECOMPOSE_PROCESSES=( 'build' 'up' 'import_db' 'explore_db' 'import_files'
-  'tail-dev-email' 'drush' 'backup-db' 'explore-php-container'
+  'tail-dev-email' 'drush' 'backup-db' 'explore-php-container' 'install_drupal'
   "${DECOMPOSE_WEB_PROCESSES[@]}" "${DECOMPOSE_COMMON_PROCESSES[@]}"
   "${DECOMPOSE_BACKUP_PROCESSES[@]}" "${DECOMPOSE_DOCKER_PROCESSES[@]}" )
 
@@ -128,6 +128,32 @@ _decompose-process-import_files() {
 }
 _decompose-process-import_files_help() {
   echo "  Copies 'files' directory to the php container"
+}
+
+_decompose-process-install_drupal() {
+  # If a settings.php file is missing install site
+  if [ -f "$PROJECT_SOURCE_CONTAINER_PATH/sites/default/settings.php" ]; then
+    echo "Drupal settings.php file alredy exists. Is Drupal already installed?"
+    exit 1
+  fi
+
+  if [ -f "$PROJECT_SOURCE_CONTAINER_PATH/sites/default/default.settings.php" ]; then
+    echo "Drupal default.settings.php is missing. Is the Drupal source downloaded?"
+    exit 1
+  fi
+
+  echo "Installing Drupal..."
+  # Get container id
+  local cid=$(docker-compose ps -q php)
+
+  # Install Drupal
+  docker exec -it $cid bash -c "drush si -y --db-url=mysql://$PROJECT_DB_USER:$PROJECT_DB_PASSWORD@db:3306/$PROJECT_DB_DATABASE"
+
+  # Make files are owned by 'www-data' user
+  docker exec -it $cid bash -c "chown -R www-data:www-data sites/default/files"
+}
+_decompose-process-install_drupal_help() {
+  echo "  Installs Drupal"
 }
 
 # vim:syntax=sh
