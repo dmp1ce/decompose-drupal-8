@@ -1,4 +1,4 @@
-Drupal 7 environment for Decompose intended to help developers quickly start a Drupal 7 website. Because this project uses Docker instead of a virtual machine, the website is suitable for production as well as development and testing!
+Drupal 8 environment for Decompose intended to help developers quickly start a Drupal 8 website. Because this project uses Docker instead of a virtual machine, the website is suitable for production as well as development and testing!
 
 # Requirements
 
@@ -9,20 +9,21 @@ Drupal 7 environment for Decompose intended to help developers quickly start a D
 # Quick Start
 
 ``` sh
-decompose --init https://github.com/dmp1ce/decompose-drupal-7.git
+decompose --init https://github.com/dmp1ce/decompose-drupal-8.git
 decompose build && decompose up
+decompose drupal_install
 ```
 Then visit `http://localhost/install.php` to install Drupal. Username, password and host information for the database is already entered into the settings.php so all you'll need to do is setup admin user.
 
-Modify the `containers/source/source/drupal/make.yml` file to add the modules, themes and libraries you want. After modifying `make.yml`, run `decompose build && decompose up` again.
+Modify the `containers/source/source/drupal/make.yml` file to add the modules, themes and libraries you want. After modifying `make.yml`, run `decompose up` or simply `docker-compose up source` again.
 
 # Usage
 
-Decompose uses skeleton files in the `.decompose/environment/skel` to create a starting point for working on Drupal 7. Decompose will also initialize a git repository, so `git status` will show all of the files which have been created for you. Some of the files created are `.mo` files which are template files and contain elements (variables) like `{{PROJECT_NAME}}`. These elements are defined throughout the project but primarily in `elements` and `.decompose/elements`. Many tasks can be done with a decompose process such as `decompose build` or `decompose up`.
+Decompose uses skeleton files in the `.decompose/environment/skel` to create a starting point for working on Drupal 8. Decompose will also initialize a git repository, so `git status` will show all of the files which have been created for you. Some of the files created are `.mo` files which are template files and contain elements (variables) like `{{PROJECT_NAME}}`. These elements are defined throughout the project but primarily in `elements` and `.decompose/elements`. Many tasks can be done with a decompose process such as `decompose build` or `decompose up`.
 
 ## File structure
 
-After `decompose --init https://github.com/dmp1ce/decompose-drupal-7.git` is run, the following directory structure will be created.
+After `decompose --init https://github.com/dmp1ce/decompose-drupal-8.git` is run, the following directory structure will be created.
 ```
 ├── containers
 │   ├── backup
@@ -36,7 +37,7 @@ After `decompose --init https://github.com/dmp1ce/decompose-drupal-7.git` is run
 ├── elements
 └── processes
 ```
-The containers directory is the configuration for all containers used by Drupal 7. The backup and backup_data containers are used for backing up Drupal 7 files and database settings using Duply. The data container stores Drupal uploaded files. The nginx container containers the nginx configuration for Drupal. The nginx_proxy directory is a special directory for configuration the nginx_proxy container which can host multiple websites from the same host! See jwilder/nginx-proxy. The php directory has the php-fpm and php configuration. Finally, the source directory is a special directory for sharing the Drupal source between nginx and php containers.
+The containers directory is the configuration for all containers used by Drupal 8. The backup and backup_data containers are used for backing up Drupal 8 files and database settings using Duply. The data container stores Drupal uploaded files. The nginx container containers the nginx configuration for Drupal. The nginx_proxy directory is a special directory for configuration the nginx_proxy container which can host multiple websites from the same host! See jwilder/nginx-proxy. The php directory has the php-fpm and php configuration. Finally, the source directory is a special directory for sharing the Drupal source between nginx and php containers.
 
 The `docker-compose.yml.mo` is a template file for creating the `docker-compose.yml` file. This file configures how each container interacts with each other. It also configures various settings such as environment variables, labels and restart settings.
 
@@ -117,6 +118,7 @@ Processes are typically common tasks that are needed when working on the project
 - `backup-db` : Runs backup script. Also does backup on Drupal uploaded files, dispite the poor name
 - `explore-php-container` : Opens a command prompt to the PHP container
 - `env` : Shows if the current configuration is in production or development mode and shows URL host settings
+- `drupal_install` : Installs Drupal if it isn't installed already.
 
 ### Additional Processes from decompose libraries
 TODO: Instead of listing all of the processes provided by libraries, instead link to the library documentation when it is completed.
