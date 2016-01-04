@@ -37,13 +37,11 @@ db:
 source:
   build: containers/source/.
   volumes:
-    - {{PROJECT_SOURCE_CONTAINER_PATH}}
+    - {{#DEVELOPMENT}}{{PROJECT_SOURCE_HOST_PATH}}{{/DEVELOPMENT}}{{#PRODUCTION}}{{PROJECT_NAMESPACE}}_source{{/PRODUCTION}}:{{PROJECT_SOURCE_CONTAINER_PATH}}
     # Uncomment to enable overrides
-    #- {{#DEVELOPMENT}}{{PROJECT_SOURCE_HOST_PATH}}:{{/DEVELOPMENT}}{{PROJECT_SOURCE_CONTAINER_PATH}}
     #- {{#DEVELOPMENT}}{{PROJECT_SOURCE_HOST_PATH}}/../modules:{{/DEVELOPMENT}}{{PROJECT_SOURCE_CONTAINER_PATH}}/sites/all/modules/_overrides
     #- {{#DEVELOPMENT}}{{PROJECT_SOURCE_HOST_PATH}}/../themes:{{/DEVELOPMENT}}{{PROJECT_SOURCE_CONTAINER_PATH}}/sites/all/themes/_overrides
     #- {{#DEVELOPMENT}}{{PROJECT_SOURCE_HOST_PATH}}/../libraries:{{/DEVELOPMENT}}{{PROJECT_SOURCE_CONTAINER_PATH}}/sites/all/libraries/_overrides
-  command: "true"
   labels:
     - "data_container=true"
 data:
