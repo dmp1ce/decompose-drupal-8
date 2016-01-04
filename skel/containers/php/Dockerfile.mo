@@ -20,6 +20,10 @@ RUN sed -i 's|;mbstring.http_output =$|mbstring.http_output = pass|g' /usr/local
 
 # Set timezone
 RUN sed -i 's|;date.timezone =$|date.timezone = "{{PROJECT_PHP_TIMEZONE}}"|g' /usr/local/etc/php/php.ini
+
+# Fix raw post bug: https://www.drupal.org/node/2456025
+RUN sed -i 's|;always_populate_raw_post_data =.*$|always_populate_raw_post_data = -1|g' /usr/local/etc/php/php.ini
+
 # Increase memory limit
 #RUN sed -i 's|memory_limit = 128M|memory_limit = 256M|g' /usr/local/etc/php/php.ini
 # Increase pm.max_children value (For Drupal's features module)
