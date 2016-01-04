@@ -14,7 +14,11 @@ COPY {{PROJECT_SOURCE_PATH}} {{PROJECT_SOURCE_CONTAINER_PATH}}
 
 # Use make.sh script for setting up source
 COPY make.sh /srv/http/make.sh
-RUN chmod +rx /srv/http/make.sh && sync && /srv/http/make.sh
+# Prepare make.sh to be run
+RUN chmod +rx /srv/http/make.sh
+
+# Setup startup script to download Drupal if it isn't already.
+CMD /srv/http/make.sh
 
 # Copy overrides (Uncomment to enable overrides)
 # Copy modules
