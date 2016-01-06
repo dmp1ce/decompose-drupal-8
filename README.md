@@ -11,7 +11,7 @@ Drupal 8 environment for Decompose intended to help developers quickly start a D
 ``` sh
 decompose --init https://github.com/dmp1ce/decompose-drupal-8.git
 decompose build && decompose up
-decompose drupal_install
+decompose install_drupal
 ```
 Then visit `http://localhost/install.php` to install Drupal. Username, password and host information for the database is already entered into the settings.php so all you'll need to do is setup admin user.
 
