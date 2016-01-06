@@ -13,7 +13,7 @@ decompose --init https://github.com/dmp1ce/decompose-drupal-8.git
 decompose build && decompose up
 decompose install_drupal
 ```
-Then visit `http://localhost/install.php` to install Drupal. Username, password and host information for the database is already entered into the settings.php so all you'll need to do is setup admin user.
+Then visit `http://localhost/` to see Drupal. Username, password and host information for the database is already entered into the settings.php so all you'll need to do is setup admin user.
 
 Modify the `containers/source/source/drupal/make.yml` file to add the modules, themes and libraries you want. After modifying `make.yml`, run `decompose up` or simply `docker-compose up source` again.
 
