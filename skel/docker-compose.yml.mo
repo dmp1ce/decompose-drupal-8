@@ -61,11 +61,5 @@ backup:
 {{#PRODUCTION}}
   restart: always
 {{/PRODUCTION}}
-# Backup data containers
-backup_data:
-  build: containers/backup_data/.
-  command: "true"
-  labels:
-    - "data_container=true"
 
 # vi: set tabstop=2 expandtab syntax=yaml:
