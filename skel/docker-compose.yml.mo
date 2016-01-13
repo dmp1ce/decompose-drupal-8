@@ -55,7 +55,6 @@ backup:
   command: "/home/duply/backup_service"
   volumes_from:
     - data
-    - backup_data
   links:
     - db
 {{#PRODUCTION}}
