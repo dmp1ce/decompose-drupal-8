@@ -7,7 +7,8 @@ PROJECT_NGINX_VIRTUAL_HOST_ALTS="www.mysite.local alt_mysite.local www.alt_mysit
 # Set this site as default.
 PROJECT_NGINX_DEFAULT_HOST="mysite.local"
 
-PROJECT_NAMESPACE="hardwoodstore-d8"
+# Make this unique from other projects.
+PROJECT_NAMESPACE="drupal-8"
 
 # Source location constants
 PROJECT_SOURCE_PATH="source/drupal"
