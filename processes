@@ -67,7 +67,8 @@ _decompose-process-build() {
   # Start 'source' container to setup source volumes
   docker-compose run --rm source ${PROJECT_BUILD_PATH}/docker_build_context/update_source.bash
 
-  # TODO: Compile SASS
+  # Add custom build steps here
+  # docker-compose run --rm your_container your_build_command
 
   # Create release
   docker-compose run --rm source ${PROJECT_BUILD_PATH}/docker_build_context/create_release.bash
