@@ -7,6 +7,7 @@ php:
     - db
   environment:
     TERM: dumb
+  log_driver: "journald"
 {{#PRODUCTION}}
   restart: always
 {{/PRODUCTION}}
@@ -19,6 +20,7 @@ nginx:
     - data
   environment:
     - VIRTUAL_HOST={{PROJECT_NGINX_PROXY_VIRTUAL_HOSTS}}
+  log_driver: "journald"
 {{#PRODUCTION}}
   restart: always
 {{/PRODUCTION}}
@@ -30,6 +32,7 @@ db:
     MYSQL_PASSWORD: {{PROJECT_DB_PASSWORD}}
     MYSQL_DATABASE: {{PROJECT_DB_DATABASE}}
     TERM: dumb
+  log_driver: "journald"
 {{#PRODUCTION}}
   restart: always
 {{/PRODUCTION}}
@@ -45,11 +48,13 @@ source:
   command: echo "{{PROJECT_ENVIRONMENT}} source. Doing nothing."
   labels:
     - "data_container=true"
+  log_driver: "journald"
 data:
   build: containers/data/.
   command: "true"
   labels:
     - "data_container=true"
+  log_driver: "journald"
 # Backup
 backup:
   build: containers/backup/.
@@ -58,6 +63,7 @@ backup:
     - data
   links:
     - db
+  log_driver: "journald"
 {{#PRODUCTION}}
   restart: always
 {{/PRODUCTION}}
