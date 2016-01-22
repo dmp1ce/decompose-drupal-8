@@ -15,14 +15,12 @@ RUN chmod 600 /etc/msmtp_php && chown www-data:www-data /etc/msmtp_php && \
 sed -i 's|;sendmail_path =$|sendmail_path = "{{PROJECT_SENDMAIL_PATH}}"|g' /usr/local/etc/php/php.ini
 
 # disable mbstring.http_input and mbstring.http_output
-RUN sed -i 's|;mbstring.http_input =$|mbstring.http_input = pass|g' /usr/local/etc/php/php.ini
-RUN sed -i 's|;mbstring.http_output =$|mbstring.http_output = pass|g' /usr/local/etc/php/php.ini
-
 # Set timezone
-RUN sed -i 's|;date.timezone =$|date.timezone = "{{PROJECT_PHP_TIMEZONE}}"|g' /usr/local/etc/php/php.ini
-
 # Fix raw post bug: https://www.drupal.org/node/2456025
-RUN sed -i 's|;always_populate_raw_post_data =.*$|always_populate_raw_post_data = -1|g' /usr/local/etc/php/php.ini
+RUN sed -i 's|;mbstring.http_input =$|mbstring.http_input = pass|g' /usr/local/etc/php/php.ini && \
+  sed -i 's|;mbstring.http_output =$|mbstring.http_output = pass|g' /usr/local/etc/php/php.ini && \
+  sed -i 's|;date.timezone =$|date.timezone = "{{PROJECT_PHP_TIMEZONE}}"|g' /usr/local/etc/php/php.ini && \
+  sed -i 's|;always_populate_raw_post_data =.*$|always_populate_raw_post_data = -1|g' /usr/local/etc/php/php.ini
 
 # Increase memory limit
 #RUN sed -i 's|memory_limit = 128M|memory_limit = 256M|g' /usr/local/etc/php/php.ini
@@ -34,4 +32,4 @@ COPY mail_catch /opt/mail_catch
 RUN chmod +x /opt/mail_catch
 
 # Set working directory to Drupal
-WORKDIR {{PROJECT_SOURCE_CONTAINER_PATH}}
+WORKDIR {{PROJECT_CURRENT_RELEASE_PATH}}

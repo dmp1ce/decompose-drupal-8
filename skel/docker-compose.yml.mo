@@ -37,11 +37,12 @@ db:
 source:
   build: containers/source/.
   volumes:
-    - {{#DEVELOPMENT}}{{PROJECT_SOURCE_HOST_PATH}}{{/DEVELOPMENT}}{{#PRODUCTION}}{{PROJECT_NAMESPACE}}_source{{/PRODUCTION}}:{{PROJECT_SOURCE_CONTAINER_PATH}}
-    # Uncomment to enable overrides
-    #- {{#DEVELOPMENT}}{{PROJECT_SOURCE_HOST_PATH}}/../modules:{{/DEVELOPMENT}}{{PROJECT_SOURCE_CONTAINER_PATH}}/sites/all/modules/_overrides
-    #- {{#DEVELOPMENT}}{{PROJECT_SOURCE_HOST_PATH}}/../themes:{{/DEVELOPMENT}}{{PROJECT_SOURCE_CONTAINER_PATH}}/sites/all/themes/_overrides
-    #- {{#DEVELOPMENT}}{{PROJECT_SOURCE_HOST_PATH}}/../libraries:{{/DEVELOPMENT}}{{PROJECT_SOURCE_CONTAINER_PATH}}/sites/all/libraries/_overrides
+    - {{#DEVELOPMENT}}{{PROJECT_SOURCE_HOST_PATH}}{{/DEVELOPMENT}}{{#PRODUCTION}}{{PROJECT_NAMESPACE}}_build{{/PRODUCTION}}:{{PROJECT_BUILD_PATH}}/build
+    - {{PROJECT_NAMESPACE}}_releases:{{PROJECT_RELEASES_PATH}}
+    {{#DEVELOPMENT}}- {{PROJECT_SOURCE_HOST_PATH}}/../modules:{{PROJECT_BUILD_PATH}}/build/sites/all/modules{{/DEVELOPMENT}}
+    {{#DEVELOPMENT}}- {{PROJECT_SOURCE_HOST_PATH}}/../themes:{{PROJECT_BUILD_PATH}}/build/sites/all/themes{{/DEVELOPMENT}}
+    {{#DEVELOPMENT}}- {{PROJECT_SOURCE_HOST_PATH}}/../libraries:{{PROJECT_BUILD_PATH}}/build/sites/all/libraries{{/DEVELOPMENT}}
+  command: echo "{{PROJECT_ENVIRONMENT}} source. Doing nothing."
   labels:
     - "data_container=true"
 data:

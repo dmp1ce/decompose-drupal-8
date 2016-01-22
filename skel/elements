@@ -7,10 +7,14 @@ PROJECT_NGINX_VIRTUAL_HOST_ALTS="www.mysite.local alt_mysite.local www.alt_mysit
 # Set this site as default.
 PROJECT_NGINX_DEFAULT_HOST="mysite.local"
 
+PROJECT_NAMESPACE="hardwoodstore-d8"
+
 # Source location constants
 PROJECT_SOURCE_PATH="source/drupal"
 PROJECT_SOURCE_HOST_PATH="./containers/source/"$PROJECT_SOURCE_PATH
-PROJECT_SOURCE_CONTAINER_PATH="/srv/http/source"
+PROJECT_RELEASES_PATH="/app/releases"
+PROJECT_CURRENT_RELEASE_PATH="${PROJECT_RELEASES_PATH}/current"
+PROJECT_BUILD_PATH="/app/build"
 
 # Where to write current version information to
 PROJECT_VERSION_FILE="containers/source/$PROJECT_SOURCE_PATH/version.txt"
@@ -21,10 +25,9 @@ PROJECT_SENDMAIL_PATH="/usr/bin/msmtp -C /etc/msmtp_php -t"
 # Backup config
 PROJECT_BACKUP_CONFIG_NAME=$PROJECT_NGINX_VIRTUAL_HOST
 PROJECT_BACKUP_INCLUDES=""
-PROJECT_BACKUP_EXCLUDES=( '.gitmodules' )
+PROJECT_BACKUP_EXCLUDES=( '.gitmodules' 'backup_config' )
 
 # PHP timezone
 PROJECT_PHP_TIMEZONE="America/New_York"
-
 
 # vim:syntax=sh

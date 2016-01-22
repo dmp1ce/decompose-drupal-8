@@ -62,14 +62,29 @@ _decompose-process-build() {
   _decompose-process-common-build
   _decompose-process_nginx_proxy_build
   _decompose-process-docker-build
+
+  # Drupal 8 specific build steps
+  # Start 'source' container to setup source volumes
+  docker-compose run --rm source ${PROJECT_BUILD_PATH}/docker_build_context/update_source.bash
+
+  # TODO: Compile SASS
+
+  # Create release
+  docker-compose run --rm source ${PROJECT_BUILD_PATH}/docker_build_context/create_release.bash
 }
 _decompose-process-build_help() {
   echo "  Build the project"
 }
 
 _decompose-process-up() {
+  # Set current release to latest
+  docker-compose run --rm source ${PROJECT_BUILD_PATH}/docker_build_context/set_current_release.bash
+
   _decompose-process-docker-up
   _decompose-process_nginx_proxy_up
+
+  # Clean up old releases
+  docker-compose run --rm source ${PROJECT_BUILD_PATH}/docker_build_context/cleanup_releases.bash
 }
 _decompose-process-up_help() {
   echo "  Start project locally"

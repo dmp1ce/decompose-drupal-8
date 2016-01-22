@@ -2,7 +2,7 @@
 # Reference: https://www.nginx.com/resources/wiki/start/topics/recipes/drupal/
 server {
   server_name {{PROJECT_NGINX_VIRTUAL_HOST}};
-  root {{PROJECT_SOURCE_CONTAINER_PATH}}; ## <-- Your only path reference.
+  root {{PROJECT_CURRENT_RELEASE_PATH}}; ## <-- Your only path reference.
  
   location = /favicon.ico {
     log_not_found off;
