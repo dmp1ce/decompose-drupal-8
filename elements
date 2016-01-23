@@ -17,6 +17,10 @@ PROJECT_PHP_MYSQL_EXTENSION="pdo_mysql"
 # Sendmail path for development
 PROJECT_SENDMAIL_PATH="/opt/mail_catch "
 
+# Set local user/group id
+PROJECT_HOST_USERID="$(id -u)"
+PROJECT_HOST_GROUPID="$(id -g)"
+
 # Debugging for nginx
 #PROJECT_DEBUG_NGINX="on"
 # Basic HTTP security

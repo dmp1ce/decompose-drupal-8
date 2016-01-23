@@ -1,2 +1,5 @@
 # Generated files
 /Dockerfile
+
+# Ignore generated files
+/*.bash
