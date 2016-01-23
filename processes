@@ -30,7 +30,7 @@ _decompose-process-explore-php-container() {
   local cid=$(docker-compose ps -q php)
 
   # Enter php
-  docker exec -it $cid bash
+  docker exec -u hostuser -it $cid bash
 
 }
 _decompose-process-explore-php-container_help() {
@@ -79,13 +79,13 @@ _decompose-process-build_help() {
 
 _decompose-process-up() {
   # Set current release to latest
-  docker-compose run --rm source ${PROJECT_BUILD_PATH}/docker_build_context/set_current_release.bash
+  docker-compose run --rm -u root source ${PROJECT_BUILD_PATH}/docker_build_context/set_current_release.bash
 
   _decompose-process-docker-up
   _decompose-process_nginx_proxy_up
 
   # Clean up old releases
-  docker-compose run --rm source ${PROJECT_BUILD_PATH}/docker_build_context/cleanup_releases.bash
+  docker-compose run --rm -u root source ${PROJECT_BUILD_PATH}/docker_build_context/cleanup_releases.bash
 }
 _decompose-process-up_help() {
   echo "  Start project locally"
@@ -95,7 +95,7 @@ _decompose-process-drush() {
   # Get the name of the php container
   local cid=$(docker-compose ps -q php)
 
-  docker exec -it $cid drush "$@"
+  docker exec -u hostuser -it $cid drush "$@"
 }
 _decompose-process-drush_help() {
   echo "  Run drush with parameters"
@@ -163,9 +163,9 @@ _decompose-process-install_drupal() {
   local cid=$(docker-compose ps -q php)
 
   # Install Drupal
-  docker exec -it $cid bash -c "drush si -y --db-url=mysql://$PROJECT_DB_USER:$PROJECT_DB_PASSWORD@db:3306/$PROJECT_DB_DATABASE"
+  docker exec -u hostuser -it $cid bash -c "drush si -y --db-url=mysql://$PROJECT_DB_USER:$PROJECT_DB_PASSWORD@db:3306/$PROJECT_DB_DATABASE"
 
-  # Make files are owned by 'www-data' user
+  # Make sure 'files' are owned by 'www-data' user
   docker exec -it $cid bash -c "chown -R www-data:www-data sites/default/files"
 }
 _decompose-process-install_drupal_help() {
