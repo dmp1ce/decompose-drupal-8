@@ -28,8 +28,12 @@ RUN sed -i 's|;mbstring.http_input =$|mbstring.http_input = pass|g' /usr/local/e
 #RUN sed -i 's|pm.max_children = 5|pm.max_children = 20|g' /usr/local/etc/php-fpm.conf
 
 # Add mail_catch script
+# Create 'hostuser'
+# Create temporary release path
 COPY mail_catch /opt/mail_catch
-RUN chmod +x /opt/mail_catch
+RUN chmod +x /opt/mail_catch && \
+useradd -m -u {{PROJECT_HOST_USERID}} -g {{PROJECT_HOST_GROUPID}} hostuser && \
+mkdir -p {{PROJECT_CURRENT_RELEASE_PATH}}
 
 # Set working directory to Drupal
 WORKDIR {{PROJECT_CURRENT_RELEASE_PATH}}
