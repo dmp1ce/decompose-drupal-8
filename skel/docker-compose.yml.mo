@@ -2,7 +2,7 @@ php:
   build: containers/php/.
   volumes_from:
     - source
-    - data
+    - files
   links:
     - db
   environment:
@@ -17,7 +17,7 @@ nginx:
     - php
   volumes_from:
     - source
-    - data
+    - files
   environment:
     - VIRTUAL_HOST={{PROJECT_NGINX_PROXY_VIRTUAL_HOSTS}}
   log_driver: "journald"
@@ -42,16 +42,22 @@ source:
   volumes:
     - {{#DEVELOPMENT}}{{PROJECT_SOURCE_HOST_PATH}}{{/DEVELOPMENT}}{{#PRODUCTION}}{{PROJECT_NAMESPACE}}_build{{/PRODUCTION}}:{{PROJECT_BUILD_PATH}}/build
     - {{PROJECT_NAMESPACE}}_releases:{{PROJECT_RELEASES_PATH}}
-    {{#DEVELOPMENT}}- {{PROJECT_SOURCE_HOST_PATH}}/../modules:{{PROJECT_BUILD_PATH}}/build/sites/all/modules{{/DEVELOPMENT}}
-    {{#DEVELOPMENT}}- {{PROJECT_SOURCE_HOST_PATH}}/../themes:{{PROJECT_BUILD_PATH}}/build/sites/all/themes{{/DEVELOPMENT}}
-    {{#DEVELOPMENT}}- {{PROJECT_SOURCE_HOST_PATH}}/../libraries:{{PROJECT_BUILD_PATH}}/build/sites/all/libraries{{/DEVELOPMENT}}
+{{#DEVELOPMENT}}
+    - {{PROJECT_SOURCE_HOST_PATH}}/../modules:{{PROJECT_BUILD_PATH}}/build/sites/all/modules
+    - {{PROJECT_SOURCE_HOST_PATH}}/../themes:{{PROJECT_BUILD_PATH}}/build/sites/all/themes
+    - {{PROJECT_SOURCE_HOST_PATH}}/../libraries:{{PROJECT_BUILD_PATH}}/build/sites/all/libraries
+    - {{PROJECT_SOURCE_HOST_PATH}}/../config:{{PROJECT_BUILD_PATH}}/config
+{{/DEVELOPMENT}}
   command: echo "{{PROJECT_ENVIRONMENT}} source. Doing nothing."
   labels:
     - "data_container=true"
   log_driver: "journald"
-data:
-  build: containers/data/.
-  command: "true"
+files:
+  image: busybox
+  command: echo "files container. Doing nothing."
+  volumes:
+    - {{PROJECT_NAMESPACE}}_public_files:/app/files/public
+    - {{PROJECT_NAMESPACE}}_private_files:/app/files/private
   labels:
     - "data_container=true"
   log_driver: "journald"
@@ -60,7 +66,7 @@ backup:
   build: containers/backup/.
   command: "/home/duply/backup_service"
   volumes_from:
-    - data
+    - files
   links:
     - db
   log_driver: "journald"

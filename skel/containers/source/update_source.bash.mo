@@ -23,3 +23,11 @@ echo "Updating source from docker_build_context. Will NOT override files which a
 echo "See decompose to force Drupal to update."
 cp -rn {{PROJECT_BUILD_PATH}}/docker_build_context/source/drupal/* {{PROJECT_BUILD_PATH}}/build
 {{/DEVELOPMENT}}
+
+chmod +w {{PROJECT_BUILD_PATH}}/build/sites/default
+# Copy settings.php
+cp {{PROJECT_BUILD_PATH}}/docker_build_context/source/settings.php {{PROJECT_BUILD_PATH}}/build/sites/default
+
+# Create files symlink
+ln -sf /app/files/public {{PROJECT_BUILD_PATH}}/build/sites/default/files
+chmod -w {{PROJECT_BUILD_PATH}}/build/sites/default

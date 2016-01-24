@@ -9,5 +9,6 @@ fi
 # Make if make.yml exists ( and drupal does not )
 if [ -f "${drupal_source_dir}/make.yml" ] && [ ! -f "${drupal_source_dir}/index.php" ]; then
   cd "${drupal_source_dir}"
+  chmod +w sites/default
   drush make -y make.yml
 fi

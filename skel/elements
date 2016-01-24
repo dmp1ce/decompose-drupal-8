@@ -12,13 +12,13 @@ PROJECT_NAMESPACE="drupal-8"
 
 # Source location constants
 PROJECT_SOURCE_PATH="source/drupal"
-PROJECT_SOURCE_HOST_PATH="./containers/source/"$PROJECT_SOURCE_PATH
+PROJECT_SOURCE_HOST_PATH="$(_decompose-project-root)/containers/source/"$PROJECT_SOURCE_PATH
 PROJECT_RELEASES_PATH="/app/releases"
 PROJECT_CURRENT_RELEASE_PATH="${PROJECT_RELEASES_PATH}/current"
 PROJECT_BUILD_PATH="/app/build"
 
 # Where to write current version information to
-PROJECT_VERSION_FILE="containers/source/$PROJECT_SOURCE_PATH/version.txt"
+PROJECT_VERSION_FILE="$(_decompose-project-root)/containers/source/$PROJECT_SOURCE_PATH/version.txt"
 
 # Mail settings
 PROJECT_SENDMAIL_PATH="/usr/bin/msmtp -C /etc/msmtp_php -t"

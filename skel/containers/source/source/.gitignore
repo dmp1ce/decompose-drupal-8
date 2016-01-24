@@ -1,0 +1,6 @@
+/drupal/**
+!/drupal/make.yml
+!/drupal/sites/all/modules/README
+!/drupal/sites/all/themes/README
+!/drupal/sites/all/libraries/README
+/settings.php
