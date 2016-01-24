@@ -75,7 +75,8 @@ _decompose-process-build() {
   docker-compose run --rm source ${PROJECT_BUILD_PATH}/docker_build_context/create_release.bash
 
   # Make 'files' and 'config' directories writable
-  docker-compose run --rm php bash -c "chmod 777 /app/files/* && chmod 777 /app/build/config"
+  docker-compose run --rm source bash -c "chmod 777 $PROJECT_BUILD_PATH/config"
+  docker-compose run --rm files sh -c "chmod 777 /app/files/*"
 }
 _decompose-process-build_help() {
   echo "  Build the project"
