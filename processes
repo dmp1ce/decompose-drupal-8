@@ -8,6 +8,7 @@ source $(_decompose-project-root)/processes
 # Declare processes
 DECOMPOSE_PROCESSES+=( 'build' 'up' 'import_db' 'explore_db' 'import_files'
   'tail-dev-email' 'drush' 'backup-db' 'explore-php-container' 'install_drupal'
+  'export_db'
   "${DECOMPOSE_WEB_PROCESSES[@]}" "${DECOMPOSE_COMMON_PROCESSES[@]}"
   "${DECOMPOSE_BACKUP_PROCESSES[@]}" "${DECOMPOSE_DOCKER_PROCESSES[@]}" )
 
@@ -100,6 +101,31 @@ _decompose-process-drush() {
 }
 _decompose-process-drush_help() {
   echo "  Run drush with parameters"
+}
+
+_decompose-process-export_db() {
+  # Verify the the first parameter is a file
+  local filename="$1"
+  if [ -z "$filename" ]; then
+    echo "Please specify name of export"
+    exit 1
+  fi
+
+  # Get the name of the database container
+  local cid=$(docker-compose ps -q php)
+
+  # Export file
+  docker exec -u hostuser $cid bash -c "drush sql-dump --gzip > /tmp/${filename##*/}.sql.gz"
+
+  # Copy file to container /tmp
+  docker cp $cid:/tmp/${filename##*/}.sql.gz $filename.sql.gz
+
+  # Delete /tmp file
+  docker exec $cid rm /tmp/${filename##*/}.sql.gz
+}
+_decompose-process-export_db_help() {
+  echo "  Export DB to the specified filename"
+  echo "  Export will append '.sql.gz' to filename."
 }
 
 _decompose-process-import_db() {
