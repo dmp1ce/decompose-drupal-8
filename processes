@@ -145,10 +145,10 @@ _decompose-process-import_db() {
   docker cp $sql_file $cid:/tmp
 
   # Import file
-  docker exec $cid bash -c "gzip -d < /tmp/$sql_file | drush sqlc"
+  docker exec $cid bash -c "gzip -d < /tmp/${sql_file##*/} | drush sqlc"
 
   # Delete /tmp file
-  docker exec $cid rm /tmp/$sql_file
+  docker exec $cid rm /tmp/${sql_file##*/}
 }
 _decompose-process-import_db_help() {
   echo "  Import DB passed in as a parameter 1"
