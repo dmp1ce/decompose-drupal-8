@@ -4,3 +4,4 @@
 !/drupal/sites/all/themes/README
 !/drupal/sites/all/libraries/README
 /settings.php
+/services.yml

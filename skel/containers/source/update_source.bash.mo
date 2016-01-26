@@ -25,8 +25,8 @@ cp -rn {{PROJECT_BUILD_PATH}}/docker_build_context/source/drupal/* {{PROJECT_BUI
 {{/DEVELOPMENT}}
 
 chmod +w {{PROJECT_BUILD_PATH}}/build/sites/default
-# Copy settings.php
-cp -f {{PROJECT_BUILD_PATH}}/docker_build_context/source/settings.php {{PROJECT_BUILD_PATH}}/build/sites/default
+# Copy settings.php and services.yml
+cp -f {{PROJECT_BUILD_PATH}}/docker_build_context/source/{settings.php,services.yml} {{PROJECT_BUILD_PATH}}/build/sites/default
 
 # Create files symlink
 ln -sf /app/files/public {{PROJECT_BUILD_PATH}}/build/sites/default/files
