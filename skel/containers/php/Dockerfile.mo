@@ -32,6 +32,7 @@ RUN sed -i 's|;mbstring.http_input =$|mbstring.http_input = pass|g' /usr/local/e
 # Create temporary release path
 COPY mail_catch /opt/mail_catch
 RUN chmod +x /opt/mail_catch && \
+groupadd -g {{PROJECT_HOST_GROUPID}} -o hostuser && \
 useradd -m -u {{PROJECT_HOST_USERID}} -g {{PROJECT_HOST_GROUPID}} hostuser && \
 mkdir -p {{PROJECT_CURRENT_RELEASE_PATH}}
 
