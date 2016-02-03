@@ -34,7 +34,7 @@ COPY mail_catch /opt/mail_catch
 RUN chmod +x /opt/mail_catch && \
 groupadd -g {{PROJECT_HOST_GROUPID}} -o hostuser && \
 useradd -m -u {{PROJECT_HOST_USERID}} -g {{PROJECT_HOST_GROUPID}} hostuser && \
-mkdir -p {{PROJECT_CURRENT_RELEASE_PATH}}
+mkdir -p {{PROJECT_CURRENT_RELEASE_PATH}}/drupal
 
 # Set working directory to Drupal
-WORKDIR {{PROJECT_CURRENT_RELEASE_PATH}}
+WORKDIR {{PROJECT_CURRENT_RELEASE_PATH}}/drupal

@@ -253,7 +253,7 @@ $databases['default']['default'] = array (
  *   );
  * @endcode
  */
-$config_directories['sync'] = '/app/build/config';
+$config_directories['sync'] = '{{PROJECT_CURRENT_RELEASE_PATH}}/config';
 
 /**
  * Settings:
