@@ -65,16 +65,16 @@ files:
     - "data_container=true"
   log_driver: {{PROJECT_DOCKER_LOG_DRIVER}}
 # Backup
-backup:
-  build: containers/backup/.
-  command: "/home/duply/backup_service"
-  volumes_from:
-    - files
-  links:
-    - db
-  log_driver: "journald"
-{{#PRODUCTION}}
-  restart: always
-{{/PRODUCTION}}
+#backup:
+#  build: containers/backup/.
+#  command: "/home/duply/backup_service"
+#  volumes_from:
+#    - files
+#  links:
+#    - db
+#  log_driver: {{PROJECT_DOCKER_LOG_DRIVER}}
+#{{#PRODUCTION}}
+#  restart: always
+#{{/PRODUCTION}}
 
 # vi: set tabstop=2 expandtab syntax=yaml:
