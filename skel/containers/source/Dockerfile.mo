@@ -1,5 +1,4 @@
-#FROM busybox
-FROM dmp1ce/php-fpm-drupal
+FROM dmp1ce/php-fpm-drupal:5
 MAINTAINER David Parrish <daveparrish@tutanota.com>
 
 # Install Drush (latest)
