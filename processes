@@ -63,6 +63,7 @@ _decompose-process-tail-dev-email_help() {
 _decompose-process-build() {
   _decompose-process-common-build
   _decompose-process_nginx_proxy_build
+  _decompose-process-build_version_file
   _decompose-process-docker-build
 
   if [ "$PRODUCTION" = "true" ]; then
