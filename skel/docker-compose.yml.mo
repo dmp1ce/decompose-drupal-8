@@ -7,7 +7,7 @@ php:
     - db
   environment:
     TERM: dumb
-  log_driver: "journald"
+  log_driver: {{PROJECT_DOCKER_LOG_DRIVER}}
 {{#PRODUCTION}}
   restart: always
 {{/PRODUCTION}}
@@ -20,7 +20,7 @@ nginx:
     - files
   environment:
     - VIRTUAL_HOST={{PROJECT_NGINX_PROXY_VIRTUAL_HOSTS}}
-  log_driver: "journald"
+  log_driver: {{PROJECT_DOCKER_LOG_DRIVER}}
 {{#PRODUCTION}}
   restart: always
 {{/PRODUCTION}}
@@ -32,7 +32,7 @@ db:
     MYSQL_PASSWORD: {{PROJECT_DB_PASSWORD}}
     MYSQL_DATABASE: {{PROJECT_DB_DATABASE}}
     TERM: dumb
-  log_driver: "journald"
+  log_driver: {{PROJECT_DOCKER_LOG_DRIVER}}
 {{#PRODUCTION}}
   restart: always
 {{/PRODUCTION}}
@@ -54,7 +54,7 @@ source:
   command: echo "{{PROJECT_ENVIRONMENT}} source. Doing nothing."
   labels:
     - "data_container=true"
-  log_driver: "journald"
+  log_driver: {{PROJECT_DOCKER_LOG_DRIVER}}
 files:
   image: busybox
   command: echo "files container. Doing nothing."
@@ -63,7 +63,7 @@ files:
     - {{PROJECT_NAMESPACE}}_private_files:/app/files/private
   labels:
     - "data_container=true"
-  log_driver: "journald"
+  log_driver: {{PROJECT_DOCKER_LOG_DRIVER}}
 # Backup
 backup:
   build: containers/backup/.
