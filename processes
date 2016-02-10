@@ -153,13 +153,14 @@ _decompose-process-import_db() {
   docker cp $sql_file $cid:/tmp
 
   # Import file
-  docker exec $cid bash -c "gzip -d < /tmp/${sql_file##*/} | drush sqlc"
+  docker exec $cid bash -c "drush sql-drop -y && gzip -d < /tmp/${sql_file##*/} | drush sqlc"
 
   # Delete /tmp file
   docker exec $cid rm /tmp/${sql_file##*/}
 }
 _decompose-process-import_db_help() {
   echo "  Import DB passed in as a parameter 1"
+  echo "  Warning: This will drop current database."
 }
 
 _decompose-process-import_files() {
