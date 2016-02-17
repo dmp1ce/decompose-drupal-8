@@ -73,6 +73,11 @@ chmod 777 ${PROJECT_RELEASES_PATH} && mkdir -p ${PROJECT_BUILD_PATH}/build/confi
 chmod 777 ${PROJECT_BUILD_PATH}/build/config"
   fi
 
+  if [ "$DEVELOPMENT" = "true" ]; then
+    # Make the default directory if it doesn't exist
+    mkdir -p $(_decompose-project-root)/containers/source/source/drupal/sites/default
+  fi
+
   echo "Running update_source.bash ..."
   docker-compose run --rm source ${PROJECT_BUILD_PATH}/docker_build_context/update_source.bash
 
