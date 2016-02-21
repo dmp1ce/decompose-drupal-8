@@ -1,7 +1,6 @@
 # Include common elements
 source $(_decompose-project-root)/.decompose/environment/lib/web/elements
 source $(_decompose-project-root)/.decompose/environment/lib/backup/elements
-source $(_decompose-project-root)/elements
 
 ELEMENTS_POST_PROCESS+=( "${ELEMENTS_WEB_POST_PROCESS[@]}" )
 
@@ -26,5 +25,8 @@ PROJECT_HOST_GROUPID="$(id -g)"
 #PROJECT_DEBUG_NGINX="on"
 # Basic HTTP security
 #PROJECT_HTTP_SECURITY="on"
+
+# Allow project elements file to override all elements
+source $(_decompose-project-root)/elements
 
 # vim:syntax=sh
