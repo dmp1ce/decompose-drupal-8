@@ -62,7 +62,6 @@ You can create your own elmeents by adding them to the `.decompose/elements` fil
 - `PROJECT_NGINX_DEFAULT_HOST` : Tells nginx_proxy where to go if it cannot find a matching domain. Be careful with this setting as it can override other projects which share the same nginx_proxy container.
 - `PROJECT_SOURCE_PATH` : The relative location of the Drupal source from the source `Dockerfile`
 - `PROJECT_SOURCE_HOST_PATH` : The relative location of the Drupal source from the `docker-compose.yml` file
-- `PROJECT_SOURCE_CONTAINER_PATH` : The location of the Drupal source in the container
 - `PROJECT_VERSION_FILE` : The location and name of the version file to create on build
 - `PROJECT_PHP_TIMEZONE` : The timezone of the server. Used to configures the PHP timezone.
 - `PROJECT_DEBUG_NGINX` : Turn nginx debugging on

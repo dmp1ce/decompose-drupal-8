@@ -179,11 +179,15 @@ _decompose-process-import_files() {
   # Get the name of the database container
   local cid=$(docker-compose ps -q php)
 
+  local files_dir="$PROJECT_CURRENT_RELEASE_PATH/drupal/sites/default/files" 
   # Copy directory to container
-  docker cp $directory/. $cid:$PROJECT_SOURCE_CONTAINER_PATH/sites/default/files
+  docker cp $directory/. $cid:$files_dir
 
-  # Give access to everyone for 'files'
-  docker exec $cid chmod -R 777 $PROJECT_SOURCE_CONTAINER_PATH/sites/default/files
+  # Set correct owner for 'files'
+  # Allow other containers to see files
+  docker exec $cid bash -c "chown -R www-data: $files_dir/ && \
+    find $files_dir/. -type d -print0 | xargs -0 chmod 0755 && \
+    find $files_dir/. -type f -print0 | xargs -0 chmod 0644"
 }
 _decompose-process-import_files_help() {
   echo "  Copies 'files' directory to the php container"
