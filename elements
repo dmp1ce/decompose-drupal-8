@@ -21,6 +21,9 @@ PROJECT_SENDMAIL_PATH="/opt/mail_catch "
 PROJECT_HOST_USERID="$(id -u)"
 PROJECT_HOST_GROUPID="$(id -g)"
 
+# Backup
+PROJECT_BACKUP_SOURCE="/app/files"
+
 # Debugging for nginx
 #PROJECT_DEBUG_NGINX="on"
 # Basic HTTP security
