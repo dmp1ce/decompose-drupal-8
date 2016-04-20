@@ -1,0 +1,20 @@
+sudo: required
+
+services:
+  - docker
+
+language: bash
+
+# Install bats, decompose and docker-compose
+before_install:
+  - sudo add-apt-repository ppa:duggan/bats --yes
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq bats git coreutils uuid-runtime realpath
+  - sudo git clone --recursive https://github.com/dmp1ce/decompose.git /opt/decompose
+  - sudo ln -s /opt/decompose/decompose /usr/local/bin
+  - sudo curl -o /tmp/docker-compose -L https://github.com/docker/compose/releases/download/1.6.2/docker-compose-`uname -s`-`uname -m`
+  - sudo mv /tmp/docker-compose /usr/local/bin/docker-compose
+  - sudo chmod +x /usr/local/bin/docker-compose
+
+script:
+  - travis_wait 60 bats ./test/bats

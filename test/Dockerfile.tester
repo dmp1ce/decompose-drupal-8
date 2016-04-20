@@ -1,0 +1,28 @@
+FROM debian
+MAINTAINER David Parrish <daveparrish@tutanota.com>
+
+# Install decompose and decompose requirements
+# Install BATS
+# Install Docker and docker-compose
+RUN mkdir -p /opt/decompose && \
+apt-get update && \
+apt-get install -y --no-install-recommends \
+  git-core curl uuid-runtime apt-transport-https ca-certificates && \
+apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 \
+  --recv-keys 58118E89F3A912897C070ADBF76221572C52609D && \
+echo "deb https://apt.dockerproject.org/repo debian-jessie main" \
+  >> /etc/apt/sources.list.d/docker.list && \
+apt-get update && \
+apt-get install -y --no-install-recommends docker-engine && \
+git clone --recursive https://github.com/dmp1ce/decompose.git /opt/decompose && \
+ln -s /opt/decompose/decompose /usr/local/bin && \
+git clone https://github.com/sstephenson/bats.git /opt/bats && \
+/opt/bats/install.sh /usr/local && \
+curl -L https://github.com/docker/compose/releases/download/1.6.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose && \
+chmod +x /usr/local/bin/docker-compose
+
+ADD . /app
+
+# Enable linked Docker server. See example:
+# https://github.com/docker-library/docker/blob/master/1.10/docker-entrypoint.sh
+ENV DOCKER_HOST="tcp://docker:2375"

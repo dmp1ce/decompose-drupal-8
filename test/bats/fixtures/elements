@@ -1,0 +1,2 @@
+# journald not available in container.
+PROJECT_DOCKER_LOG_DRIVER=none
