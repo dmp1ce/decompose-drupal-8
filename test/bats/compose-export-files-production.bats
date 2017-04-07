@@ -31,6 +31,7 @@ load "$BATS_TEST_DIRNAME/bats_functions.bash"
   echo "Some content" >> tmp_files/content.txt
 
   decompose --build
+  docker-compose ps
   run decompose import_files tmp_files
 
   echo "$output"
