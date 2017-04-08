@@ -27,7 +27,8 @@ load "$BATS_TEST_DIRNAME/bats_functions.bash"
 @test "[development] Changing PROJECT_SOURCE_PATH doesn't break build" {
   cd "$WORKING"
 
-  sed -i 's/PROJECT_SOURCE_PATH="source\/drupal"/PROJECT_SOURCE_PATH="source\/httpdocs"/g' "$WORKING/elements"
+  sed -i".tmp" 's/PROJECT_SOURCE_PATH="source\/drupal"/PROJECT_SOURCE_PATH="source\/httpdocs"/g' "$WORKING/elements" \
+    && mv "$WORKING/elements.tmp" "$WORKING/elements"
   mv "$WORKING/containers/source/source/drupal" "$WORKING/containers/source/source/httpdocs"
 
   run decompose build
