@@ -28,7 +28,7 @@ load "$BATS_TEST_DIRNAME/bats_functions.bash"
   cd "$WORKING"
 
   sed -i".tmp" 's/PROJECT_SOURCE_PATH="source\/drupal"/PROJECT_SOURCE_PATH="source\/httpdocs"/g' "$WORKING/elements" \
-    && mv "$WORKING/elements.tmp" "$WORKING/elements"
+    && rm "$WORKING/elements.tmp"
   mv "$WORKING/containers/source/source/drupal" "$WORKING/containers/source/source/httpdocs"
 
   run decompose build
