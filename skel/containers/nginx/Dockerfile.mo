@@ -11,12 +11,9 @@ RUN apt-get update \
  && apt-get install -y -q --no-install-recommends \
     ca-certificates \
     wget \
+    supervisor \
  && apt-get clean \
  && rm -r /var/lib/apt/lists/*
-
-# Install Forego
-RUN wget -P /usr/local/bin https://godist.herokuapp.com/projects/ddollar/foreg\
-o/releases/current/linux-amd64/forego && chmod u+x /usr/local/bin/forego
 
 # Copy nginx config files
 COPY default.conf /etc/nginx/conf.d/default.conf
@@ -32,7 +29,8 @@ RUN sed -i '/ #gzip  on/a\\n    map $http_x_forwarded_proto $proxyhttps {\n     
 
 # Copy application scripts
 COPY app/. /app/
+COPY app/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 WORKDIR /app/
 
 # Change command to run forego instead of nginx
-CMD ["forego", "start", "-r"]
+CMD ["/usr/bin/supervisord", "-c", "/app/supervisord.conf"]
