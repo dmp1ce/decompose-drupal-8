@@ -114,10 +114,21 @@ _decompose-process-up() {
   docker-compose run --rm -u root source ${PROJECT_BUILD_PATH}/docker_build_context/set_current_release.bash
 
   _decompose-process-docker-up
+  return_code=$((return_code + $?))
+
+  # If there was an error, then just return now before creating release
+  if [ $return_code -ne 0 ]; then
+    echo "Return code of '$return_code' detected. Returning."
+    return $return_code
+  fi
+
   _decompose-process_nginx_proxy_up
+  return_code=$((return_code + $?))
 
   # Clean up old releases
   docker-compose run --rm -u root source ${PROJECT_BUILD_PATH}/docker_build_context/cleanup_releases.bash
+  return_code=$((return_code + $?))
+  return $return_code
 }
 _decompose-process-up_help() {
   echo "  Start project locally"
