@@ -1,8 +1,10 @@
-#DECOMPOSE_MYPROJECT_PROCESSES+=( 'project_specific_process' ) 
+# DECOMPOSE_PROCESSES+=( 'project_specific_process' )
 #
 #_decompose-process-project_specific_process() {
 #  echo "custom process for 'my project'"
 #}
 #_decompose-process-project_specific_process_help() {
-#  echo "  Custom build for FTL"
+#  echo "  Custom build for 'my project'"
 #}
+#
+# vim:syntax=sh tabstop=2 shiftwidth=2 expandtab

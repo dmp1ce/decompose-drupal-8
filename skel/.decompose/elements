@@ -1,8 +1,7 @@
 PROJECT_ENVIRONMENT="development"
-PROJECT_NGINX_VIRTUAL_HOST="mysite.local"
-PROJECT_NGINX_VIRTUAL_HOST_ALTS=""
+
 # Default nginx_proxy host
-PROJECT_NGINX_DEFAULT_HOST="mysite.local"
+#PROJECT_NGINX_DEFAULT_HOST="mysite.local"
 
 # Mail SMTP Service
 #PROJECT_SMTP_HOST=""
@@ -15,10 +14,13 @@ PROJECT_SENDMAIL_PATH="/opt/mail_catch "
 PROJECT_DB_USER="drupal_user"
 PROJECT_DB_DATABASE="drupal"
 PROJECT_DB_PASSWORD="password"
-PROJECT_DB_ROOT_PASSWORD="root_password_dont_use"
+PROJECT_DB_ROOT_PASSWORD="root_password_dont_use!!!!!!!!!!!!!!!!"
 
-# Drupal Salt Hash. Example: c9e4f2c63a48ef5057146ac37f4e9676f79d2b7ba681546640b43c4903ed930c
-PROJECT_DRUPAL_HASH="USE_PASSWORD_GENERATOR!!"
+# Drupal settings.
+# Use password generator to generate hash. Should be something like:
+# P6fa5zkqgLu4AqgwyFULCua76gRSlX_ksvS7q4TOOm4
+# If empty, Drupal will fallback to using a hash of database settings.
+PROJECT_DRUPAL_HASH_SALT='';
 
 # Backup
 #PROJECT_BACKUP_GPG_KEY=""
@@ -43,5 +45,14 @@ PROJECT_REVERSE_PROXY_USER=""
 PROJECT_REVERSE_PROXY_IP=""
 PROJECT_REVERSE_PROXY_PORT="44443"
 
+# GPG key generation settings
+#PROJECT_BACKUP_GPG_REALNAME=""
+#PROJECT_BACKUP_GPG_COMMENT=""
+#PROJECT_BACKUP_GPG_EMAIL=""
+#PROJECT_BACKUP_GPG_KEY_DIR="containers/backup/.duply/site_data"
+
+# SSH key settings
+#PROJECT_BACKUP_SSH_COMMENT=""
+#PROJECT_BACKUP_SSH_KEY_DIR="containers/backup/.ssh"
 
 # vim:syntax=sh

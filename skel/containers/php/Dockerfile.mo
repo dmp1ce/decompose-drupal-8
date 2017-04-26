@@ -4,10 +4,13 @@ MAINTAINER David Parrish <daveparrish@tutanota.com>
 # Install Drush (latest)
 RUN cd /usr/local/src/drush && \
 git checkout master && \
-composer install
+composer update && composer install && \
 
 # Use the default php.ini depending on $environment.
-RUN cp /usr/src/php/php.ini-{{PROJECT_ENVIRONMENT}} /usr/local/etc/php/php.ini
+cp /usr/src/php/php.ini-{{PROJECT_ENVIRONMENT}} /usr/local/etc/php/php.ini
+
+# Copy check_drupal
+COPY check_drupal /opt/check_drupal
 
 # Add msmtp settings
 COPY msmtp/msmtp_php /etc/msmtp_php
@@ -34,7 +37,11 @@ COPY mail_catch /opt/mail_catch
 RUN chmod +x /opt/mail_catch && \
 groupadd -g {{PROJECT_HOST_GROUPID}} -o hostuser && \
 useradd -m -u {{PROJECT_HOST_USERID}} -g {{PROJECT_HOST_GROUPID}} hostuser && \
-mkdir -p {{PROJECT_CURRENT_RELEASE_PATH}}/drupal
+mkdir -p {{PROJECT_CURRENT_RELEASE_PATH}}/{{PROJECT_WEB_DIRNAME}}
+
+# Add cron_service script
+COPY cron_service /opt/cron_service
+RUN chmod +x /opt/cron_service
 
 # Set working directory to Drupal
-WORKDIR {{PROJECT_CURRENT_RELEASE_PATH}}/drupal
+WORKDIR {{PROJECT_CURRENT_RELEASE_PATH}}/{{PROJECT_WEB_DIRNAME}}

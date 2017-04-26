@@ -25,6 +25,7 @@ load "$BATS_TEST_DIRNAME/bats_functions.bash"
   [ "$status" -eq 0 ]
 }
 @test "[development] Changing PROJECT_SOURCE_PATH doesn't break build" {
+  skip "Not a requirement in 2.x branch"
   cd "$WORKING"
 
   sed -i".tmp" 's/PROJECT_SOURCE_PATH="source\/drupal"/PROJECT_SOURCE_PATH="source\/httpdocs"/g' "$WORKING/elements" \

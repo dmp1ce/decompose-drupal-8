@@ -1,3 +1,6 @@
+# Include processes
+#source $(_decompose-project-root)/processes
+
 # Declare processes
 #DECOMPOSE_PROCESSES+=( 'test' )
 

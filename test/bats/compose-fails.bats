@@ -11,7 +11,7 @@ load "$BATS_TEST_DIRNAME/bats_functions.bash"
   run decompose build
 
   echo "$output"
-  [ "${lines[-1]}" == "Return code of '2' detected. Returning." ]
+  [ "${lines[${#lines[@]}-1]}" == "Return code of '2' detected. Returning." ]
   [ "$status" -ne 0 ]
 }
 

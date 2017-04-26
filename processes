@@ -3,14 +3,32 @@ source $(_decompose-project-root)/.decompose/environment/lib/web/processes
 source $(_decompose-project-root)/.decompose/environment/lib/common/processes
 source $(_decompose-project-root)/.decompose/environment/lib/backup/processes
 source $(_decompose-project-root)/.decompose/environment/lib/docker/processes
-source $(_decompose-project-root)/processes
 
 # Declare processes
 DECOMPOSE_PROCESSES+=( 'build' 'up' 'import_db' 'explore_db' 'import_files'
   'tail-dev-email' 'drush' 'backup-db' 'explore-php-container' 'install_drupal'
-  'export_db'
+  'export_db' 'export_files' 'check_drupal' 'cron' 'update-composer-lock'
   "${DECOMPOSE_WEB_PROCESSES[@]}" "${DECOMPOSE_COMMON_PROCESSES[@]}"
   "${DECOMPOSE_BACKUP_PROCESSES[@]}" "${DECOMPOSE_DOCKER_PROCESSES[@]}" )
+
+_decompose-process-update-composer-lock() {
+  echo "Updating composer.lock..."
+
+  # Run 'composer update' command
+  cid=$(docker-compose run -d \
+    source bash -c "cd /app/build/docker_build_context/source && composer update")
+  docker logs -f "$cid"
+
+  # Copy 'composer.lock' out of container
+  docker cp "$cid:/app/build/docker_build_context/source/composer.lock" \
+    "$(_decompose-project-root)/containers/source/source"
+
+  # Remove container
+  docker rm "$cid"
+}
+_decompose-process-update-composer-lock_help() {
+  echo "  Update composer.lock"
+}
 
 _decompose-process-explore_db() {
   # Get the name of the database container
@@ -61,6 +79,8 @@ _decompose-process-tail-dev-email_help() {
 }
 
 _decompose-process-build() {
+  local return_code=0
+
   _decompose-process-common-build
   return_code=$((return_code + $?))
   _decompose-process_nginx_proxy_build
@@ -81,19 +101,25 @@ _decompose-process-build() {
     docker-compose run -u root --rm source bash -c "chmod 777 ${PROJECT_BUILD_PATH}/build && \
 chmod 777 ${PROJECT_RELEASES_PATH} && mkdir -p ${PROJECT_BUILD_PATH}/build/config && \
 chmod 777 ${PROJECT_BUILD_PATH}/build/config"
+    return_code=$((return_code + $?))
   fi
 
-  if [ "$DEVELOPMENT" = "true" ]; then
-    # Make the default directory if it doesn't exist
-    mkdir -p $(_decompose-project-root)/containers/source/${PROJECT_SOURCE_PATH}/sites/default
-  fi
+  echo "Making composer cache writable..."
+  docker-compose run -u root --rm source bash -c "chmod 777 /home/hostuser/.composer"
+  return_code=$((return_code + $?))
 
   echo "Running update_source.bash ..."
   docker-compose run --rm source ${PROJECT_BUILD_PATH}/docker_build_context/update_source.bash
   return_code=$((return_code + $?))
 
-  # Add custom build steps here
-  # docker-compose run --rm your_container your_build_command
+  # Add custom build steps to your processes file in the function:
+  # _decompose-process-custom-build-steps
+  if [ -n "$(type -t _decompose-process-custom-build-steps)" ] &&
+    [ "$(type -t _decompose-process-custom-build-steps)" = function ]; then
+    echo "Running custom build steps ..."
+    _decompose-process-custom-build-steps
+    return_code=$((return_code + $?))
+  fi
 
   echo "Running create_release.bash ..."
   docker-compose run -u root --rm source ${PROJECT_BUILD_PATH}/docker_build_context/create_release.bash
@@ -114,21 +140,10 @@ _decompose-process-up() {
   docker-compose run --rm -u root source ${PROJECT_BUILD_PATH}/docker_build_context/set_current_release.bash
 
   _decompose-process-docker-up
-  return_code=$((return_code + $?))
-
-  # If there was an error, then just return now before creating release
-  if [ $return_code -ne 0 ]; then
-    echo "Return code of '$return_code' detected. Returning."
-    return $return_code
-  fi
-
   _decompose-process_nginx_proxy_up
-  return_code=$((return_code + $?))
 
   # Clean up old releases
   docker-compose run --rm -u root source ${PROJECT_BUILD_PATH}/docker_build_context/cleanup_releases.bash
-  return_code=$((return_code + $?))
-  return $return_code
 }
 _decompose-process-up_help() {
   echo "  Start project locally"
@@ -142,31 +157,6 @@ _decompose-process-drush() {
 }
 _decompose-process-drush_help() {
   echo "  Run drush with parameters"
-}
-
-_decompose-process-export_db() {
-  # Verify the the first parameter is a file
-  local filename="$1"
-  if [ -z "$filename" ]; then
-    echo "Please specify name of export"
-    exit 1
-  fi
-
-  # Get the name of the database container
-  local cid=$(docker-compose ps -q php)
-
-  # Export file
-  docker exec -u hostuser $cid bash -c "drush sql-dump --gzip > /tmp/${filename##*/}.sql.gz"
-
-  # Copy file to container /tmp
-  docker cp $cid:/tmp/${filename##*/}.sql.gz $filename.sql.gz
-
-  # Delete /tmp file
-  docker exec $cid rm /tmp/${filename##*/}.sql.gz
-}
-_decompose-process-export_db_help() {
-  echo "  Export DB to the specified filename"
-  echo "  Export will append '.sql.gz' to filename."
 }
 
 _decompose-process-import_db() {
@@ -194,6 +184,55 @@ _decompose-process-import_db_help() {
   echo "  Warning: This will drop current database."
 }
 
+_decompose-process-export_db() {
+  # Verify the the first parameter is a file
+  local filename="$1"
+  if [ -z "$filename" ]; then
+    echo "Please specify name of export"
+    exit 1
+  fi
+
+  # Get the name of the database container
+  local cid=$(docker-compose ps -q php)
+
+  # Export file
+  docker exec $cid bash -c "drush sql-dump --gzip > /tmp/${filename##*/}.sql.gz"
+
+  # Copy file to container /tmp
+  docker cp $cid:/tmp/${filename##*/}.sql.gz $filename.sql.gz
+
+  # Delete /tmp file
+  docker exec $cid rm /tmp/${filename##*/}.sql.gz
+}
+_decompose-process-export_db_help() {
+  echo "  Export DB to the specified filename"
+  echo "  Export will append '.sql.gz' to filename."
+}
+
+_decompose-process-export_files() {
+  # Verify the the first parameter is a directory
+  local directory="$1"
+  if [ -z "$directory" ]; then
+    echo "Please specify directory to export in to."
+    exit 1
+  fi
+  if [ -d "$directory" ]; then
+    echo "Please specifiy a directory which doesn't exist"
+    exit 1
+  fi
+
+  # Get the name of the php container
+  local cid=$(docker-compose ps -q php)
+
+  # Copy files to containers current release
+  docker cp $cid:$PROJECT_CURRENT_RELEASE_PATH/$PROJECT_WEB_DIRNAME/sites/default/files/ $directory
+}
+_decompose-process-export_files_help() {
+  echo "  Export public files to the specified directory"
+  echo "  PARAM 1: Directory name to export files to."
+  echo "           Directory will be created."
+}
+
 _decompose-process-import_files() {
   # Verify the the first parameter is a file
   local directory=$1
@@ -205,7 +244,7 @@ _decompose-process-import_files() {
   # Get the name of the database container
   local cid=$(docker-compose ps -q php)
 
-  local files_dir="$PROJECT_CURRENT_RELEASE_PATH/drupal/sites/default/files" 
+  local files_dir="$PROJECT_CURRENT_RELEASE_PATH/$PROJECT_WEB_DIRNAME/sites/default/files"
   # Copy directory to container
   docker cp $directory/. $cid:$files_dir
 
@@ -217,6 +256,46 @@ _decompose-process-import_files() {
 }
 _decompose-process-import_files_help() {
   echo "  Copies 'files' directory to the php container"
+}
+
+_decompose-process-check_drupal() {
+  docker-compose exec --user www-data -T php bash -c '/opt/check_drupal/bin/check_drupal -d /app/releases/current/web/ -n "$(drush vget --exact site_name)" -s e -u w -e e -w w -m e'
+  return $?
+}
+_decompose-process-check_drupal_help() {
+  echo "  Call check_drupal nagios monitoring script from within PHP container"
+}
+
+_decompose-process-cron() {
+  echo "Rebuilding the project ..."
+  decompose build
+  return_code=$((return_code + $?))
+  if [ $return_code -ne 0 ]; then
+    echo "Return code of '$return_code' detected. Stopping Cron process."
+    return $return_code
+  fi
+  echo "Restarting services ..."
+  decompose up
+  return_code=$((return_code + $?))
+  if [ $return_code -ne 0 ]; then
+    echo "Return code of '$return_code' detected. Stopping Cron process."
+    return $return_code
+  fi
+  echo "Updating Drupal database ..."
+  decompose drush -y updb
+  # Return is sometimes 129 if there are no updates. Not useful.
+  #return_code=$((return_code + $?))
+  echo "Removing dangling Docker images ..."
+  decompose remove-dangling-docker-images
+  return_code=$((return_code + $?))
+  echo "Backing up config ..."
+  decompose backup_config
+  return_code=$((return_code + $?))
+
+  return $return_code
+}
+_decompose-process-cron_help() {
+  echo "  Run cron tasks"
 }
 
 _decompose-process-install_drupal() {
@@ -234,4 +313,7 @@ _decompose-process-install_drupal_help() {
   echo "  Installs Drupal"
 }
 
-# vim:syntax=sh
+# Source project processes last to allow the project to override any environment process
+source $(_decompose-project-root)/processes
+
+# vim:syntax=sh tabstop=2 shiftwidth=2 expandtab

@@ -48,7 +48,6 @@ load "$BATS_TEST_DIRNAME/bats_functions.bash"
 }
 
 @test "[production] 'decompose export_files' exports from preserved volumes" {
-  skip "Waiting to implement export_files. See #2102 in Redmine"
   cd "$WORKING"
   decompose --build
 

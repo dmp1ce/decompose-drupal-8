@@ -2,8 +2,12 @@
 # Reference: https://www.nginx.com/resources/wiki/start/topics/recipes/drupal/
 server {
   server_name {{PROJECT_NGINX_VIRTUAL_HOST}};
-  root {{PROJECT_CURRENT_RELEASE_PATH}}/drupal; ## <-- Your only path reference.
+  root {{PROJECT_CURRENT_RELEASE_PATH}}/web; ## <-- Your only path reference.
  
+  # Enable compression, this will help if you have for instance advagg‎ module
+  # by serving Gzip versions of the files.
+  #gzip_static on;
+
   location = /favicon.ico {
     log_not_found off;
     access_log off;
@@ -20,7 +24,7 @@ server {
     log_not_found off;
     access_log off;
   }
- 
+
   # Very rarely should these ever be accessed outside of your lan
   location ~* \.(txt|log)$ {
     allow 192.168.0.0/16;

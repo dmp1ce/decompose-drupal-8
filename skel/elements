@@ -11,14 +11,20 @@ PROJECT_NGINX_DEFAULT_HOST="mysite.local"
 PROJECT_NAMESPACE="drupal-8"
 
 # Source location constants
-PROJECT_SOURCE_PATH="source/drupal"
+PROJECT_COMPOSER_PATH="source"
+PROJECT_SOURCE_PATH="$PROJECT_COMPOSER_PATH/web"
 PROJECT_SOURCE_HOST_PATH="$(_decompose-project-root)/containers/source/"$PROJECT_SOURCE_PATH
 PROJECT_RELEASES_PATH="/app/releases"
 PROJECT_CURRENT_RELEASE_PATH="${PROJECT_RELEASES_PATH}/current"
 PROJECT_BUILD_PATH="/app/build"
+PROJECT_WEB_DIRNAME="web"
+PROJECT_WEB_BUILD_PATH="$PROJECT_BUILD_PATH/build/$PROJECT_WEB_DIRNAME"
 
 # Where to write current version information to
-PROJECT_VERSION_FILE="containers/source/$PROJECT_SOURCE_PATH/version.txt"
+PROJECT_VERSION_FILE="containers/source/$PROJECT_COMPOSER_PATH/drupal-override/version.txt"
+
+# Tell composer to update the composer.lock file and get the latest versions of modules
+PROJECT_COMPOSER_UPDATE="true"
 
 # Mail settings
 PROJECT_SENDMAIL_PATH="/usr/bin/msmtp -C /etc/msmtp_php -t"
@@ -26,7 +32,7 @@ PROJECT_SENDMAIL_PATH="/usr/bin/msmtp -C /etc/msmtp_php -t"
 # Backup config
 PROJECT_BACKUP_CONFIG_NAME=$PROJECT_NGINX_VIRTUAL_HOST
 PROJECT_BACKUP_INCLUDES=""
-PROJECT_BACKUP_EXCLUDES=( '.gitmodules' 'backup_config' )
+PROJECT_BACKUP_EXCLUDES=( '.gitmodules' 'config_backup' )
 
 # PHP timezone
 PROJECT_PHP_TIMEZONE="America/New_York"

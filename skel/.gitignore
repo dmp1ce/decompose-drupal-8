@@ -1,7 +1,8 @@
 # Generated files
 /docker-compose.yml
-/backup_config
+/config_backup
 
 # .decompose files
 /.decompose/elements
 /.decompose/processes
+/.decompose/skel-diff-ignore

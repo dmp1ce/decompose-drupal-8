@@ -25,3 +25,5 @@ fi
 echo "Setting '{{PROJECT_BUILD_PATH}}/build' to the current release"
 ln -sfn {{PROJECT_BUILD_PATH}}/build {{PROJECT_CURRENT_RELEASE_PATH}}
 {{/DEVELOPMENT}}
+
+# vim: syntax=sh

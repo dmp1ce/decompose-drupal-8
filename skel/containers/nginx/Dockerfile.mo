@@ -32,5 +32,5 @@ COPY app/. /app/
 COPY app/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 WORKDIR /app/
 
-# Change command to run forego instead of nginx
+# Change command to run supervisor instead of nginx
 CMD ["/usr/bin/supervisord", "-c", "/app/supervisord.conf"]
